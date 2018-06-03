@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Veggie-tastic Homework</title>
+</head>
+<body>
+    <div id="buttons">
+        <button data-veggie="Asparagus">Asparagus</button>
+        <button data-veggie="Onion">Onion</button>
+        <button data-veggie="Mushroom">Mushroom</button>
+        <button data-veggie="Broccoli">Broccoli</button>
+
+    <form id="veggie-form">
+        <label for="veggie-input">Search for a Veggie!</label>
+        <input type="text" id="veggie-input">
+    
+    <!-- adding new veggie  -->
+        <input id="add-veggie" type="submit" value="Search">
+    </form>
+
+    <!-- Where the veggies go -->
+    <div id="veggies-view"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    
+    var veggieList = [];
+
+// function DisplayVeggieGif(){
+//             var vegetable = $(this).attr("#veggie-input");
+
+    $("button").on("click", function (event) {
+        event.preventDefault();
+        var vegetable = $(this).attr("data-veggie");
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + vegetable + "&api_key=qPuceBYMceDxh00xECqKBWN0GL5XrpYm&limit=5";
+    
+            $.ajax({
+                url: queryURL,
+                method: "GET",
+            })
+            .then(function(response) {
+                var results = response.data;
+                $("#veggies-view").text(JSON.stringify(response));
+
+            for (var i = 0; i < results.length; i++) {
+                var gifDiv = $("<div class ='item'>");
+                var veggieImage = $("<img>");
+                veggieImage.attr("src", results[i].images.fixed_height.url);
+                gifDiv.prepend(veggieImage);
+                $("#veggies-view").prepend(gifDiv);                
+            }
+            $("#veggie-input").on("click", function(event) {
+            event.preventDefault();
+            var veggie = $("#veggie-input").val().trim();
+            veggie.push(veggieList);
+            renderButtons();
+        });
+    });
+  });
+        function renderButtons() {
+            $("#buttons").empty();
+            for (var i = 0; i < veggieList.length; i++) {
+            var addMore = $("<button>");
+            addMore.addClass("veggie");
+            addMore.attr("data-veggie", veggieList[i]);
+            addMore.text(veggieList[i]);
+            $("#buttons").append(addMore);
+            }
+        };
+
+       
+
+    $(document).on("click", ".veggie");
+    renderButtons();
+        // $("#veggies-view").text(JSON.stringify(response));
+
+ 
+</script>
+</body>
+</html>
